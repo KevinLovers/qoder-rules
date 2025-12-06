@@ -176,9 +176,14 @@ ${SCALAR}          标量值
 *** Test Cases ***
 测试用例名称
     [Documentation]
-    ...    【用例编号】{测试用例编号}
-    ...    【用例名称】{测试用例标题}
-    ...    【用例等级】{从文本测试用例提取或默认}
+    ...    【用例编号】
+    ...    {测试用例编号}
+    ...    【用例名称】
+    ...    {测试用例标题}
+    ...    【用例等级】
+    ...    {从文本测试用例提取或默认}
+    ...    【测试类型】
+    ...    {单功能测试/功能交互测试/质量属性测试}
     ...    【预置条件】
     ...    {前置条件1}
     ...    {前置条件2}
@@ -192,7 +197,8 @@ ${SCALAR}          标量值
     ...    Given: {Given内容}
     ...    When: {When内容}
     ...    Then: {Then内容}
-    ...    【作者】Auto Generated
+    ...    【作者】
+    ...    Auto Generated
     [Tags]    Auto    {测试类型标签}    {其他标签}
     [Setup]           初始化关键字（如果需要）
     [Teardown]         清理关键字（如果需要）
@@ -291,9 +297,16 @@ ${TIMEOUT}         10秒
 *** Test Cases ***
 MFQ-M-001_用户登录
     [Documentation]
-    ...    【用例编号】MFQ-M-001
-    ...    【用例名称】用户登录
-    ...    【用例等级】P1
+    ...    【用例编号】
+    ...    MFQ-M-001
+    ...    【用例名称】
+    ...    用户登录
+    ...    【用例等级】
+    ...    P1
+    ...    【测试类型】
+    ...    单功能测试
+    ...    【测试对象】
+    ...    用户登录功能模块
     ...    【预置条件】
     ...    1. 系统已启动
     ...    2. 用户账号已创建
@@ -308,8 +321,10 @@ MFQ-M-001_用户登录
     ...    Given: 用户已注册
     ...    When: 用户输入正确的用户名和密码并点击登录
     ...    Then: 系统验证通过并跳转到首页
-    ...    【作者】Auto Generated
+    ...    【作者】
+    ...    Auto Generated
     [Tags]    Auto    SingleFunction    Login
+    [Setup]    
     # 前置条件处理
     # 打开登录页面
     Go To    ${BASE_URL}/login
@@ -321,6 +336,7 @@ MFQ-M-001_用户登录
     # 验证预期结果
     Wait Until Location Contains    /home    timeout=${TIMEOUT}
     Page Should Contain    欢迎
+    [Teardown]    
 ```
 
 #### 2.3.2 功能交互测试用例模板
@@ -342,9 +358,18 @@ Force Tags          TDMAuto
 *** Test Cases ***
 MFQ-F-001_登录后查看个人信息
     [Documentation]
-    ...    【用例编号】MFQ-F-001
-    ...    【用例名称】登录后查看个人信息
-    ...    【用例等级】P1
+    ...    【用例编号】
+    ...    MFQ-F-001
+    ...    【用例名称】
+    ...    登录后查看个人信息
+    ...    【用例等级】
+    ...    P1
+    ...    【测试类型】
+    ...    功能交互测试
+    ...    【功能交互】
+    ...    用户登录功能与个人信息查看功能的交互
+    ...    【交互类型】
+    ...    顺序交互
     ...    【预置条件】
     ...    1. 用户已登录
     ...    【测试步骤】
@@ -358,8 +383,10 @@ MFQ-F-001_登录后查看个人信息
     ...    Given: 用户已登录
     ...    When: 用户点击个人信息菜单
     ...    Then: 系统显示用户的个人信息
-    ...    【作者】Auto Generated
+    ...    【作者】
+    ...    Auto Generated
     [Tags]    Auto    FunctionInteraction    Login    Profile
+    [Setup]    
     # 步骤1：登录系统（已在Setup中完成）
     # 步骤2：点击个人信息菜单
     Click Element    id=profile-menu
@@ -367,6 +394,7 @@ MFQ-F-001_登录后查看个人信息
     Wait Until Page Contains    个人信息    timeout=${TIMEOUT}
     Page Should Contain Element    id=user-name
     Page Should Contain Element    id=user-email
+    [Teardown]    
 ```
 
 #### 2.3.3 质量属性测试用例模板
@@ -388,10 +416,20 @@ Force Tags          TDMAuto
 *** Test Cases ***
 MFQ-Q-001_登录性能测试
     [Documentation]
-    ...    【用例编号】MFQ-Q-001
-    ...    【用例名称】登录性能测试
-    ...    【用例等级】P2
-    ...    【质量属性】性能
+    ...    【用例编号】
+    ...    MFQ-Q-001
+    ...    【用例名称】
+    ...    登录性能测试
+    ...    【用例等级】
+    ...    P2
+    ...    【测试类型】
+    ...    质量属性测试
+    ...    【质量属性】
+    ...    性能
+    ...    【质量属性说明】
+    ...    验证登录功能的响应时间是否符合性能要求
+    ...    【测试维度】
+    ...    响应时间
     ...    【预置条件】
     ...    1. 系统已启动
     ...    【测试步骤】
@@ -400,12 +438,16 @@ MFQ-Q-001_登录性能测试
     ...    步骤3：记录结束时间
     ...    【预期结果】
     ...    1. 登录响应时间小于2秒
+    ...    【质量验证标准】
+    ...    响应时间应小于2秒
     ...    【验收准则】
     ...    Given: 系统正常运行
     ...    When: 用户执行登录操作
     ...    Then: 登录响应时间在可接受范围内
-    ...    【作者】Auto Generated
+    ...    【作者】
+    ...    Auto Generated
     [Tags]    Auto    Quality    Performance    Login
+    [Setup]    
     # 记录开始时间
     ${start_time}=    Get Time    epoch
     # 执行登录操作
@@ -420,6 +462,7 @@ MFQ-Q-001_登录性能测试
     ${response_time}=    Evaluate    ${end_time} - ${start_time}
     # 验证性能要求
     Should Be True    ${response_time} < 2    登录响应时间${response_time}秒超过2秒要求
+    [Teardown]    
 ```
 
 
@@ -440,11 +483,36 @@ MFQ-Q-001_登录性能测试
 |----------------|---------------------|------|
 | 测试用例编号 | Test Case名称 + Documentation中的【用例编号】 | 如：MFQ-M-001 → MFQ-M-001_用户登录 |
 | 测试用例标题 | Test Case名称 + Documentation中的【用例名称】 | 简化标题用于Test Case名称 |
-| 测试类型 | Tags + Force Tags | SingleFunction/FunctionInteraction/Quality |
-| 前置条件 | Documentation中的【预置条件】 | 逐条列出 |
+| 测试类型 | Documentation中的【测试类型】+ Tags + Force Tags | 单功能测试/功能交互测试/质量属性测试 |
+| 测试对象（MFQ-M） | Documentation中的【测试对象】 | 单功能测试用例特有 |
+| 功能交互（MFQ-F） | Documentation中的【功能交互】 | 功能交互测试用例特有 |
+| 交互类型（MFQ-F） | Documentation中的【交互类型】 | 功能交互测试用例特有 |
+| 质量属性（MFQ-Q） | Documentation中的【质量属性】 | 质量属性测试用例特有 |
+| 质量属性说明（MFQ-Q） | Documentation中的【质量属性说明】 | 质量属性测试用例特有 |
+| 测试维度（MFQ-Q） | Documentation中的【测试维度】 | 质量属性测试用例特有 |
+| 前置条件 | Documentation中的【预置条件】 | 逐条列出，每行一个条件 |
 | 测试步骤 | Documentation中的【测试步骤】+ 实际关键字调用 | 步骤描述 + 实现代码 |
 | 预期结果 | Documentation中的【预期结果】+ 验证关键字 | 结果描述 + 断言关键字 |
+| 质量验证标准（MFQ-Q） | Documentation中的【质量验证标准】 | 质量属性测试用例特有 |
 | 验收准则 | Documentation中的【验收准则】 | Given/When/Then格式 |
+| 作者 | Documentation中的【作者】 | 固定为"Auto Generated" |
+
+Documentation格式要求：
+- 每个字段标签（如【用例编号】）单独一行，使用 `...` 连接
+- 字段值紧跟在下行，使用 `...` 连接
+- 格式必须与API-test-spec.zh-CN.md中的格式完全一致
+- 示例格式：
+  ```robot
+  [Documentation]
+      ...    【用例编号】
+      ...    MFQ-M-001
+      ...    【用例名称】
+      ...    用户登录
+      ...    【用例等级】
+      ...    P1
+      ...
+  ```
+- 注意：字段标签和字段值必须分行，不能在同一行
 
 ### 3.2 测试步骤映射规则
 
@@ -768,8 +836,11 @@ MFQ-M-002_用户登录_无效账号    ${INVALID_USERNAME}    ${INVALID_PASSWORD
    - ✅ 是否包含Settings部分
    - ✅ 是否包含Test Cases部分
    - ✅ 每个测试用例是否包含Documentation
+   - ✅ Documentation格式是否正确（字段标签和值分行，使用...连接）
+   - ✅ Documentation中的信息是否与文本测试用例对应
    - ✅ 每个测试用例是否包含测试步骤实现
    - ✅ 每个测试用例是否包含预期结果验证
+   - ✅ 是否包含[Setup]和[Teardown]（如果需要）
 
 3. **信息完整性**
    - ✅ 测试用例编号是否与文本测试用例一致
@@ -913,7 +984,37 @@ AI 处理：
 转换为RobotFramework脚本：
 *** Test Cases ***
 MFQ-M-001_用户登录
-    ...
+    [Documentation]
+    ...    【用例编号】
+    ...    MFQ-M-001
+    ...    【用例名称】
+    ...    用户登录
+    ...    【用例等级】
+    ...    P1
+    ...    【测试类型】
+    ...    单功能测试
+    ...    【测试对象】
+    ...    用户登录功能模块
+    ...    【预置条件】
+    ...    1. 系统已启动
+    ...    2. 用户账号已创建
+    ...    【测试步骤】
+    ...    步骤1：打开登录页面
+    ...    步骤2：输入用户名"testuser"
+    ...    步骤3：输入密码"password123"
+    ...    步骤4：点击登录按钮
+    ...    步骤5：验证页面跳转到首页
+    ...    【预期结果】
+    ...    1. 登录成功
+    ...    2. 跳转到首页
+    ...    【验收准则】
+    ...    Given: 用户已注册
+    ...    When: 用户输入正确的用户名和密码并点击登录
+    ...    Then: 系统验证通过并跳转到首页
+    ...    【作者】
+    ...    Auto Generated
+    [Tags]    Auto    SingleFunction    Login
+    [Setup]    
     # 步骤1：打开登录页面
     Go To    ${BASE_URL}/login
     # 步骤2：输入用户名"testuser"
@@ -925,6 +1026,7 @@ MFQ-M-001_用户登录
     # 步骤5：验证页面跳转到首页
     Wait Until Location Contains    /home    timeout=${TIMEOUT}
     Page Should Contain    欢迎
+    [Teardown]    
 ```
 
 ## 示例 3：预期结果映射
@@ -938,13 +1040,45 @@ MFQ-M-001_用户登录
 转换为RobotFramework验证：
 *** Test Cases ***
 MFQ-M-001_用户登录
-    ...
+    [Documentation]
+    ...    【用例编号】
+    ...    MFQ-M-001
+    ...    【用例名称】
+    ...    用户登录
+    ...    【用例等级】
+    ...    P1
+    ...    【测试类型】
+    ...    单功能测试
+    ...    【预置条件】
+    ...    1. 系统已启动
+    ...    【测试步骤】
+    ...    步骤1：打开登录页面
+    ...    步骤2：输入用户名和密码
+    ...    步骤3：点击登录按钮
+    ...    【预期结果】
+    ...    1. 登录成功
+    ...    2. 跳转到首页
+    ...    3. 显示欢迎信息
+    ...    【验收准则】
+    ...    Given: 用户已注册
+    ...    When: 用户输入正确的用户名和密码并点击登录
+    ...    Then: 系统验证通过并跳转到首页
+    ...    【作者】
+    ...    Auto Generated
+    [Tags]    Auto    SingleFunction    Login
+    [Setup]    
+    # 执行测试步骤
+    Go To    ${BASE_URL}/login
+    Input Text    id=username    ${USERNAME}
+    Input Text    id=password    ${PASSWORD}
+    Click Button    id=login-btn
     # 验证预期结果1：登录成功（通过URL判断）
     Wait Until Location Contains    /home    timeout=${TIMEOUT}
     # 验证预期结果2：跳转到首页（通过URL判断）
     Location Should Be    ${BASE_URL}/home
     # 验证预期结果3：显示欢迎信息
     Page Should Contain    欢迎
+    [Teardown]    
 ```
 
 
