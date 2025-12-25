@@ -1,0 +1,226 @@
+# MFQ 文本测试用例生成策略检查配置文件示例
+# ============================================
+# 使用方法：
+# 1. 复制此文件为 .mfq-text-test-case-check.yaml
+# 2. 根据项目需求修改配置项
+# 3. AI 将自动读取并应用配置
+# ============================================
+
+mfq_text_test_case:
+  # 检查模式：strict（严格模式，必须通过）或 lenient（宽松模式，警告）
+  check_mode: "strict"  # strict | lenient
+  warn_threshold: 3      # 宽松模式下最多允许的警告数
+
+  # [检查 1] 格式完整性检查
+  format:
+    enabled: true
+    require_test_case_id: true          # 必须包含测试用例标识
+    require_test_case_name: true        # 必须包含测试用例名称
+    require_description: true            # 必须包含描述
+    require_test_steps: true             # 必须包含测试步骤
+    require_expected_result: true       # 必须包含预期结果
+    require_structured_format: true     # 必须使用结构化格式
+    format_markers:                     # 格式标记
+      - "【测试用例标识】"
+      - "【测试用例名称】"
+      - "【测试用例类型】"
+      - "【测试步骤】"
+      - "【预期结果】"
+
+  # [检查 2] M-单功能测试用例检查
+  monolithic_tests:
+    enabled: true
+    require_m_prefix: true              # 必须包含M-前缀
+    min_test_cases: 3                   # 每个功能最少测试用例数
+    require_positive: true               # 必须包含正向测试用例
+    require_boundary: true               # 必须包含边界测试用例
+    require_negative: true               # 必须包含异常测试用例
+    require_independence: true           # 测试用例必须独立
+    naming_pattern: "M-{seq:03d}: {description}"
+
+  # [检查 3] F-组合交叉测试用例检查
+  combination_tests:
+    enabled: true
+    require_f_prefix: true              # 必须包含F-前缀
+    require_combination_method: true    # 必须记录组合测试方法
+    require_key_combinations: true      # 必须包含关键组合
+    max_reduction_rate: 80              # 最多减少80%的测试用例
+    combination_methods:                # 支持的组合测试方法
+      - pairwise                        # 配对测试
+      - orthogonal                       # 正交表
+      - full                            # 全组合
+    naming_pattern: "F-{seq:03d}: {description}"
+
+  # [检查 4] Q-非功能测试用例检查
+  quality_tests:
+    enabled: true
+    require_q_prefix: true              # 必须包含Q-前缀
+    require_performance: true           # 必须包含性能测试用例
+    require_security: true               # 必须包含安全测试用例
+    require_concurrency: false          # 是否必须包含并发测试用例（可选）
+    require_stress: false                # 是否必须包含压力测试用例（可选）
+    require_quantifiable_metrics: true  # 性能指标必须可量化
+    require_owasp_top10: true            # 安全测试必须覆盖OWASP Top 10
+    performance_metrics:                # 性能指标
+      - response_time                   # 响应时间
+      - throughput                      # 吞吐量
+      - memory                          # 内存使用
+      - cpu                             # CPU使用
+    security_categories:                 # 安全测试类别
+      - sql_injection                   # SQL注入
+      - xss                             # 跨站脚本攻击
+      - csrf                            # 跨站请求伪造
+      - authentication                  # 认证
+      - authorization                   # 授权
+    naming_pattern: "Q-{seq:03d}: {description}"
+
+  # [检查 5] 命名规范检查
+  naming:
+    enabled: true
+    require_mfq_prefix: true            # 必须包含MFQ前缀
+    pattern: "{type}-{seq:03d}: {description}"
+    types: ["M", "F", "Q"]
+    min_name_length: 10
+    max_name_length: 100
+    require_business_language: true     # 必须使用业务语言
+    forbid_technical_jargon: true       # 禁止技术黑话
+
+  # [检查 6] 内容完整性检查
+  content:
+    enabled: true
+    require_clear_steps: true           # 测试步骤必须清晰
+    require_verifiable_results: true    # 预期结果必须可验证
+    require_complete_data: true         # 测试数据必须完整
+    require_prerequisites: false        # 是否必须包含前置条件（建议）
+    require_postconditions: false       # 是否必须包含后置条件（建议）
+    min_steps: 1                        # 最少测试步骤数
+    min_expected_results: 1            # 最少预期结果数
+
+  # [检查 7] 独立性检查
+  independence:
+    enabled: true
+    require_complete_prerequisites: true  # 前置条件必须完整
+    require_independent_execution: true    # 必须可以独立执行
+    forbid_dependencies: true              # 禁止测试用例之间的依赖
+    require_complete_data: true            # 测试数据必须完整
+
+  # [检查 8] 分类和标签检查
+  classification:
+    enabled: true
+    require_type_identification: true     # 必须标识测试用例类型
+    require_priority: false                # 是否必须包含优先级（建议）
+    require_tags: false                    # 是否必须包含标签（建议）
+    common_tags:                           # 常用标签
+      - smoke                              # 冒烟测试
+      - regression                         # 回归测试
+      - positive                           # 正向测试
+      - negative                           # 负向测试
+      - boundary                           # 边界测试
+      - performance                        # 性能测试
+      - security                           # 安全测试
+      - api                                # API测试
+      - ui                                 # UI测试
+
+  # [检查 9] 覆盖度检查
+  coverage:
+    enabled: true
+    require_m_coverage: true               # M测试用例必须覆盖三类情况
+    require_f_coverage: true               # F测试用例必须覆盖关键组合
+    require_q_coverage: true                # Q测试用例必须覆盖主要维度
+    min_m_per_function: 3                 # 每个功能最少M测试用例数
+    require_key_functions_fq: true          # 关键功能必须包含F和Q测试用例
+
+  # [检查 10] 可读性和可维护性检查
+  maintainability:
+    enabled: true
+    require_structured_format: true       # 必须使用结构化格式
+    require_business_language: true        # 必须使用业务语言
+    require_clear_descriptions: true      # 描述必须清晰
+    require_comments: false                # 是否必须包含注释（建议）
+    max_line_length: 120                  # 最大行长度
+
+# 项目类型特定配置
+project_type: "web_app"  # web_app | api_service | mobile_app
+
+# Web 应用配置
+web_app:
+  check_mode: "strict"
+  monolithic_tests:
+    min_test_cases: 3
+  combination_tests:
+    combination_method: "pairwise"
+    max_reduction_rate: 70
+  quality_tests:
+    require_performance: true
+    require_security: true
+    require_concurrency: false
+  coverage:
+    min_m_per_function: 3
+
+# API 服务配置
+api_service:
+  check_mode: "strict"
+  monolithic_tests:
+    min_test_cases: 3
+  combination_tests:
+    combination_method: "pairwise"
+    max_reduction_rate: 60
+  quality_tests:
+    require_performance: true
+    require_security: true
+    require_concurrency: true
+  coverage:
+    min_m_per_function: 3
+
+# 移动应用配置
+mobile_app:
+  check_mode: "strict"
+  monolithic_tests:
+    min_test_cases: 3
+  combination_tests:
+    combination_method: "orthogonal"
+    max_reduction_rate: 80
+  quality_tests:
+    require_performance: true
+    require_security: true
+    require_concurrency: false
+  coverage:
+    min_m_per_function: 3
+
+# 检查项优先级配置
+check_priorities:
+  # 关键检查项（必须通过）
+  critical:
+    - format.require_test_case_id
+    - format.require_test_case_name
+    - format.require_test_steps
+    - format.require_expected_result
+    - monolithic_tests.require_m_prefix
+    - naming.require_mfq_prefix
+    - content.require_clear_steps
+    - content.require_verifiable_results
+    - independence.forbid_dependencies
+  
+  # 重要检查项（建议通过）
+  important:
+    - monolithic_tests.require_positive
+    - monolithic_tests.require_boundary
+    - monolithic_tests.require_negative
+    - combination_tests.require_combination_method
+    - quality_tests.require_performance
+    - quality_tests.require_security
+    - coverage.require_m_coverage
+  
+  # 一般检查项（可选）
+  optional:
+    - classification.require_priority
+    - classification.require_tags
+    - maintainability.require_comments
+
+# 检查报告配置
+reporting:
+  enabled: true
+  format: "detailed"  # detailed | summary | json
+  output_file: "mfq-text-test-case-check-report.json"
+  show_warnings: true
+  show_suggestions: true
