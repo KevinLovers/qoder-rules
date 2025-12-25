@@ -1,0 +1,144 @@
+# 测试点生成策略配置文件示例
+# ============================================
+# 使用方法：
+# 1. 复制此文件为 .test-strategy.yaml
+# 2. 根据项目需求修改配置项
+# 3. AI 将自动读取并应用配置
+# ============================================
+
+test_case_generation:
+  # 覆盖率检查配置
+  coverage:
+    enabled: true
+    line_coverage: 80        # 行覆盖率目标（%）
+    branch_coverage: 75      # 分支覆盖率目标（%）
+    function_coverage: 80    # 函数覆盖率目标（%）
+    statement_coverage: 80   # 语句覆盖率目标（%）
+
+  # M-单功能测试点检查配置
+  monolithic_tests:
+    enabled: true
+    min_test_points: 3       # 每个功能最少测试点数
+    require_positive: true   # 必须包含正向测试点
+    require_boundary: true   # 必须包含边界测试点
+    require_negative: true   # 必须包含异常测试点
+    naming_pattern: "M-{seq:03d}: {description}"
+
+  # F-组合交叉测试点检查配置
+  combination_tests:
+    enabled: true
+    method: "pairwise"       # 生成方法：orthogonal/pairwise/full
+    max_test_points: 50     # 最大测试点数（避免爆炸）
+    min_coverage: 80         # 最小组合覆盖率（%）
+    require_key_combinations: true  # 必须包含关键组合
+    naming_pattern: "F-{seq:03d}: {description}"
+
+  # Q-非功能测试点检查配置
+  quality_tests:
+    enabled: true
+    
+    # 性能测试配置
+    performance:
+      enabled: true
+      min_test_points: 2
+      metrics:
+        - response_time      # 响应时间
+        - throughput         # 吞吐量
+        - memory            # 内存使用
+      thresholds:
+        response_time_ms: 100    # 响应时间阈值（毫秒）
+        throughput_req_per_s: 1000  # 吞吐量阈值（请求/秒）
+        memory_mb: 100           # 内存阈值（MB）
+    
+    # 安全测试配置
+    security:
+      enabled: true
+      min_test_points: 3
+      owasp_top10: true      # 覆盖 OWASP Top 10
+      test_types:
+        - sql_injection      # SQL注入
+        - xss                # 跨站脚本攻击
+        - csrf               # 跨站请求伪造
+        - authentication     # 认证
+        - authorization      # 授权
+    
+    # 并发测试配置
+    concurrency:
+      enabled: true
+      min_test_points: 2
+      concurrent_users: 100  # 并发用户数
+      test_scenarios:
+        - race_condition     # 竞态条件
+        - deadlock           # 死锁
+        - data_consistency   # 数据一致性
+    
+    # 压力测试配置
+    stress:
+      enabled: true
+      min_test_points: 1
+      load_levels:
+        - normal             # 正常负载
+        - high               # 高负载
+        - peak               # 峰值负载
+    
+    naming_pattern: "Q-{seq:03d}: {description}"
+
+  # 测试点命名检查配置
+  naming:
+    enabled: true
+    pattern: "{type}-{seq:03d}: {description}"
+    types: ["M", "F", "Q"]
+    description_required: true
+    description_min_length: 10
+
+  # 测试点质量检查配置
+  quality:
+    enabled: true
+    require_assertions: true      # 必须包含断言
+    require_independence: true    # 测试点必须独立
+    require_cleanup: true         # 必须包含清理逻辑
+    max_test_duration: 1000       # 最大执行时间（ms）
+
+# 项目类型特定配置
+project_type: "web"  # web/cli/library
+
+# Web 应用配置
+web_app:
+  coverage:
+    line_coverage: 80
+  monolithic_tests:
+    min_test_points: 3
+  combination_tests:
+    method: "pairwise"
+    max_test_points: 50
+  quality_tests:
+    performance:
+      response_time_ms: 200
+    security:
+      owasp_top10: true
+
+# CLI 工具配置
+cli_tool:
+  coverage:
+    line_coverage: 85
+  monolithic_tests:
+    min_test_points: 3
+  combination_tests:
+    method: "orthogonal"
+    max_test_points: 30
+  quality_tests:
+    performance:
+      response_time_ms: 1000
+
+# 库/SDK 配置
+library:
+  coverage:
+    line_coverage: 90
+  monolithic_tests:
+    min_test_points: 5
+  combination_tests:
+    method: "pairwise"
+    max_test_points: 100
+  quality_tests:
+    performance:
+      response_time_ms: 50
