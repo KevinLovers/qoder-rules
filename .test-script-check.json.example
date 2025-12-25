@@ -1,0 +1,248 @@
+{
+  "robotframework_test_script": {
+    "check_mode": "strict",
+    "warn_threshold": 3,
+    
+    "structure": {
+      "enabled": true,
+      "require_settings": true,
+      "require_test_cases": true,
+      "require_keywords": false,
+      "require_variables": false,
+      "require_correct_order": true
+    },
+    
+    "settings": {
+      "enabled": true,
+      "require_library": true,
+      "require_resource": false,
+      "require_documentation": false,
+      "require_test_setup": false,
+      "require_test_teardown": false,
+      "require_suite_setup": false,
+      "require_suite_teardown": false
+    },
+    
+    "test_case_structure": {
+      "enabled": true,
+      "require_documentation": false,
+      "require_tags": false,
+      "require_setup": false,
+      "require_teardown": false,
+      "min_steps": 1,
+      "require_assertion": true
+    },
+    
+    "keywords": {
+      "enabled": true,
+      "require_keyword_exists": true,
+      "require_correct_arguments": true,
+      "forbid_undefined_keywords": true,
+      "require_library_keywords": false,
+      "require_user_keywords": false
+    },
+    
+    "variables": {
+      "enabled": true,
+      "require_variable_usage": false,
+      "forbid_hardcoded_values": true,
+      "require_meaningful_names": true,
+      "require_variable_format": true
+    },
+    
+    "test_point_naming": {
+      "enabled": true,
+      "require_test_point_prefix": true,
+      "pattern": "{type}-{seq:03d}: {description}",
+      "types": ["M", "F", "Q"],
+      "min_description_length": 10,
+      "max_description_length": 100,
+      "require_sequential_numbering": true
+    },
+    
+    "assertions": {
+      "enabled": true,
+      "min_assertions_per_test": 1,
+      "require_meaningful_assertions": true,
+      "forbid_empty_assertions": true,
+      "assertion_keywords": [
+        "Should Be Equal",
+        "Should Contain",
+        "Should Not Contain",
+        "Page Should Contain",
+        "Page Should Not Contain",
+        "Location Should Be",
+        "Title Should Be",
+        "Status Should Be"
+      ]
+    },
+    
+    "test_data": {
+      "enabled": true,
+      "require_variables": false,
+      "require_setup_teardown": false,
+      "forbid_hardcoded_data": true,
+      "require_data_independence": true
+    },
+    
+    "tags": {
+      "enabled": true,
+      "require_tags": false,
+      "require_meaningful_tags": true,
+      "common_tags": [
+        "smoke",
+        "regression",
+        "positive",
+        "negative",
+        "performance",
+        "api",
+        "ui"
+      ]
+    },
+    
+    "documentation": {
+      "enabled": true,
+      "require_test_documentation": false,
+      "require_keyword_documentation": false,
+      "min_documentation_length": 10
+    },
+    
+    "imports": {
+      "enabled": true,
+      "require_library_exists": true,
+      "require_resource_exists": true,
+      "forbid_circular_dependencies": true,
+      "require_correct_paths": true
+    },
+    
+    "isolation": {
+      "enabled": true,
+      "require_independent_tests": true,
+      "require_setup_teardown": true,
+      "forbid_test_dependencies": true,
+      "require_parallel_safe": false
+    },
+    
+    "error_handling": {
+      "enabled": true,
+      "require_error_tests": true,
+      "require_boundary_tests": true,
+      "require_negative_tests": true
+    },
+    
+    "test_point_mapping": {
+      "enabled": true,
+      "require_m_tests": true,
+      "require_f_tests": false,
+      "require_q_tests": false,
+      "m_test_requirements": {
+        "min_count": 3,
+        "require_positive": true,
+        "require_boundary": true,
+        "require_negative": true
+      },
+      "f_test_requirements": {
+        "min_count": 1,
+        "method": "template"
+      },
+      "q_test_requirements": {
+        "min_count": 1,
+        "categories": [
+          "performance",
+          "security",
+          "concurrency"
+        ]
+      }
+    }
+  },
+  
+  "project_type": "web_ui",
+  
+  "web_ui": {
+    "check_mode": "strict",
+    "settings": {
+      "require_library": true,
+      "common_libraries": ["SeleniumLibrary"]
+    },
+    "test_case_structure": {
+      "require_setup": true,
+      "require_teardown": true
+    },
+    "test_point_mapping": {
+      "require_m_tests": true,
+      "require_f_tests": false,
+      "require_q_tests": false
+    }
+  },
+  
+  "api": {
+    "check_mode": "strict",
+    "settings": {
+      "require_library": true,
+      "common_libraries": ["RequestsLibrary"]
+    },
+    "test_case_structure": {
+      "require_setup": false,
+      "require_teardown": false
+    },
+    "test_point_mapping": {
+      "require_m_tests": true,
+      "require_f_tests": true,
+      "require_q_tests": true
+    }
+  },
+  
+  "database": {
+    "check_mode": "strict",
+    "settings": {
+      "require_library": true,
+      "common_libraries": ["DatabaseLibrary"]
+    },
+    "test_case_structure": {
+      "require_setup": true,
+      "require_teardown": true
+    },
+    "test_data": {
+      "require_setup_teardown": true
+    },
+    "test_point_mapping": {
+      "require_m_tests": true,
+      "require_f_tests": true,
+      "require_q_tests": false
+    }
+  },
+  
+  "check_priorities": {
+    "critical": [
+      "structure.require_settings",
+      "structure.require_test_cases",
+      "keywords.require_keyword_exists",
+      "keywords.forbid_undefined_keywords",
+      "assertions.require_assertion",
+      "test_point_naming.require_test_point_prefix",
+      "imports.require_library_exists",
+      "imports.require_resource_exists",
+      "isolation.forbid_test_dependencies"
+    ],
+    "important": [
+      "test_case_structure.require_documentation",
+      "test_case_structure.require_tags",
+      "variables.forbid_hardcoded_values",
+      "test_data.forbid_hardcoded_data",
+      "error_handling.require_error_tests"
+    ],
+    "optional": [
+      "settings.require_documentation",
+      "documentation.require_test_documentation",
+      "tags.require_tags"
+    ]
+  },
+  
+  "reporting": {
+    "enabled": true,
+    "format": "detailed",
+    "output_file": "robotframework-test-check-report.json",
+    "show_warnings": true,
+    "show_suggestions": true
+  }
+}

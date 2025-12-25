@@ -1,0 +1,244 @@
+# RobotFramework 测试脚本生成检查策略配置文件示例
+# ============================================
+# 使用方法：
+# 1. 复制此文件为 .test-script-check.yaml
+# 2. 根据项目需求修改配置项
+# 3. AI 将自动读取并应用配置
+# ============================================
+
+robotframework_test_script:
+  # 检查模式：strict（严格模式，必须通过）或 lenient（宽松模式，警告）
+  check_mode: "strict"  # strict | lenient
+  warn_threshold: 3      # 宽松模式下最多允许的警告数
+
+  # [检查 1] 文件结构检查
+  structure:
+    enabled: true
+    require_settings: true              # 必须包含 Settings 部分
+    require_test_cases: true            # 必须包含 Test Cases 部分
+    require_keywords: false             # 是否必须包含 Keywords 部分（可选）
+    require_variables: false            # 是否必须包含 Variables 部分（可选）
+    require_correct_order: true         # 各部分顺序必须正确
+
+  # [检查 2] Settings 部分检查
+  settings:
+    enabled: true
+    require_library: true               # 必须导入至少一个库
+    require_resource: false             # 是否必须导入资源文件（可选）
+    require_documentation: false        # 是否必须包含文档（建议）
+    require_test_setup: false           # 是否必须配置 Test Setup（可选）
+    require_test_teardown: false       # 是否必须配置 Test Teardown（可选）
+    require_suite_setup: false          # 是否必须配置 Suite Setup（可选）
+    require_suite_teardown: false      # 是否必须配置 Suite Teardown（可选）
+
+  # [检查 3] 测试用例结构检查
+  test_case_structure:
+    enabled: true
+    require_documentation: false        # 是否必须包含 [Documentation]（建议）
+    require_tags: false                 # 是否必须包含 [Tags]（建议）
+    require_setup: false                # 是否必须包含 [Setup]（可选）
+    require_teardown: false            # 是否必须包含 [Teardown]（可选）
+    min_steps: 1                        # 最少步骤数
+    require_assertion: true             # 必须包含断言（必须）
+
+  # [检查 4] 关键字使用检查
+  keywords:
+    enabled: true
+    require_keyword_exists: true         # 关键字必须存在（必须）
+    require_correct_arguments: true     # 关键字参数必须正确（必须）
+    forbid_undefined_keywords: true     # 禁止未定义的关键字（必须）
+    require_library_keywords: false     # 是否必须使用库关键字（可选）
+    require_user_keywords: false        # 是否必须使用用户定义关键字（可选）
+
+  # [检查 5] 变量使用检查
+  variables:
+    enabled: true
+    require_variable_usage: false       # 是否必须使用变量（建议）
+    forbid_hardcoded_values: true       # 禁止硬编码值（必须）
+    require_meaningful_names: true       # 变量名称必须有意义
+    require_variable_format: true       # 变量格式必须正确（${var}, @{list}, &{dict}）
+
+  # [检查 6] 测试点命名检查
+  test_point_naming:
+    enabled: true
+    require_test_point_prefix: true     # 必须包含测试点前缀（必须）
+    pattern: "{type}-{seq:03d}: {description}"
+    types: ["M", "F", "Q"]              # M: 单功能, F: 组合, Q: 非功能
+    min_description_length: 10           # 最小描述长度
+    max_description_length: 100         # 最大描述长度
+    require_sequential_numbering: true   # 序号必须连续
+
+  # [检查 7] 断言检查
+  assertions:
+    enabled: true
+    min_assertions_per_test: 1          # 每个测试用例最少断言数（必须）
+    require_meaningful_assertions: true  # 必须使用有意义的断言
+    forbid_empty_assertions: true       # 禁止空断言
+    assertion_keywords:                 # 支持的断言关键字
+      - Should Be Equal
+      - Should Contain
+      - Should Not Contain
+      - Page Should Contain
+      - Page Should Not Contain
+      - Location Should Be
+      - Title Should Be
+      - Status Should Be
+
+  # [检查 8] 测试数据和Fixture检查
+  test_data:
+    enabled: true
+    require_variables: false            # 是否必须使用变量（建议）
+    require_setup_teardown: false      # 是否必须配置 Setup/Teardown（建议）
+    forbid_hardcoded_data: true        # 禁止硬编码数据（必须）
+    require_data_independence: true    # 测试数据必须独立
+
+  # [检查 9] 标签检查
+  tags:
+    enabled: true
+    require_tags: false                 # 是否必须包含标签（建议）
+    require_meaningful_tags: true       # 标签必须有意义
+    common_tags:                        # 常用标签
+      - smoke
+      - regression
+      - positive
+      - negative
+      - performance
+      - api
+      - ui
+
+  # [检查 10] 文档检查
+  documentation:
+    enabled: true
+    require_test_documentation: false   # 是否必须包含测试用例文档（建议）
+    require_keyword_documentation: false # 是否必须包含关键字文档（建议）
+    min_documentation_length: 10        # 最小文档长度
+
+  # [检查 11] 资源文件和库导入检查
+  imports:
+    enabled: true
+    require_library_exists: true         # 库必须存在（必须）
+    require_resource_exists: true       # 资源文件必须存在（必须）
+    forbid_circular_dependencies: true  # 禁止循环依赖（必须）
+    require_correct_paths: true         # 路径必须正确（必须）
+
+  # [检查 12] 测试用例独立性检查
+  isolation:
+    enabled: true
+    require_independent_tests: true     # 测试用例必须独立（必须）
+    require_setup_teardown: true        # 建议使用 Setup/Teardown
+    forbid_test_dependencies: true      # 禁止测试用例之间的依赖（必须）
+    require_parallel_safe: false        # 是否必须支持并行运行（可选）
+
+  # [检查 13] 错误处理检查
+  error_handling:
+    enabled: true
+    require_error_tests: true           # 必须包含错误处理测试（必须）
+    require_boundary_tests: true        # 必须包含边界条件测试（必须）
+    require_negative_tests: true        # 必须包含负向测试（必须）
+
+  # [检查 14] 测试点对应关系检查
+  test_point_mapping:
+    enabled: true
+    require_m_tests: true               # 必须包含M测试点（单功能测试，必须）
+    require_f_tests: false              # 是否必须包含F测试点（组合测试，可选）
+    require_q_tests: false              # 是否必须包含Q测试点（非功能测试，可选）
+    m_test_requirements:
+      min_count: 3                      # 每个功能最少M测试点数
+      require_positive: true            # 必须包含正向测试点
+      require_boundary: true            # 必须包含边界测试点
+      require_negative: true            # 必须包含异常测试点
+    f_test_requirements:
+      min_count: 1                      # 每个功能最少F测试点数（如启用）
+      method: "template"                 # 生成方法：template/pairwise
+    q_test_requirements:
+      min_count: 1                      # 每个功能最少Q测试点数（如启用）
+      categories:                       # Q测试点类别
+        - performance                   # 性能测试
+        - security                      # 安全测试
+        - concurrency                   # 并发测试
+
+# 项目类型特定配置
+project_type: "web_ui"  # web_ui | api | database
+
+# Web UI 测试配置
+web_ui:
+  check_mode: "strict"
+  settings:
+    require_library: true
+    common_libraries:
+      - SeleniumLibrary
+  test_case_structure:
+    require_setup: true
+    require_teardown: true
+  test_point_mapping:
+    require_m_tests: true
+    require_f_tests: false
+    require_q_tests: false
+
+# API 测试配置
+api:
+  check_mode: "strict"
+  settings:
+    require_library: true
+    common_libraries:
+      - RequestsLibrary
+  test_case_structure:
+    require_setup: false
+    require_teardown: false
+  test_point_mapping:
+    require_m_tests: true
+    require_f_tests: true
+    require_q_tests: true
+
+# 数据库测试配置
+database:
+  check_mode: "strict"
+  settings:
+    require_library: true
+    common_libraries:
+      - DatabaseLibrary
+  test_case_structure:
+    require_setup: true
+    require_teardown: true
+  test_data:
+    require_setup_teardown: true
+  test_point_mapping:
+    require_m_tests: true
+    require_f_tests: true
+    require_q_tests: false
+
+# 检查项优先级配置
+check_priorities:
+  # 关键检查项（必须通过）
+  critical:
+    - structure.require_settings
+    - structure.require_test_cases
+    - keywords.require_keyword_exists
+    - keywords.forbid_undefined_keywords
+    - assertions.require_assertion
+    - test_point_naming.require_test_point_prefix
+    - imports.require_library_exists
+    - imports.require_resource_exists
+    - isolation.forbid_test_dependencies
+  
+  # 重要检查项（建议通过）
+  important:
+    - test_case_structure.require_documentation
+    - test_case_structure.require_tags
+    - variables.forbid_hardcoded_values
+    - test_data.forbid_hardcoded_data
+    - error_handling.require_error_tests
+  
+  # 一般检查项（可选）
+  optional:
+    - settings.require_documentation
+    - documentation.require_test_documentation
+    - tags.require_tags
+
+# 检查报告配置
+reporting:
+  enabled: true
+  format: "detailed"  # detailed | summary | json
+  output_file: "robotframework-test-check-report.json"
+  show_warnings: true
+  show_suggestions: true

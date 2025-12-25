@@ -1,0 +1,137 @@
+{
+  "test_case_generation": {
+    "coverage": {
+      "enabled": true,
+      "line_coverage": 80,
+      "branch_coverage": 75,
+      "function_coverage": 80,
+      "statement_coverage": 80
+    },
+    "monolithic_tests": {
+      "enabled": true,
+      "min_test_points": 3,
+      "require_positive": true,
+      "require_boundary": true,
+      "require_negative": true,
+      "naming_pattern": "M-{seq:03d}: {description}"
+    },
+    "combination_tests": {
+      "enabled": true,
+      "method": "pairwise",
+      "max_test_points": 50,
+      "min_coverage": 80,
+      "require_key_combinations": true,
+      "naming_pattern": "F-{seq:03d}: {description}"
+    },
+    "quality_tests": {
+      "enabled": true,
+      "performance": {
+        "enabled": true,
+        "min_test_points": 2,
+        "metrics": ["response_time", "throughput", "memory"],
+        "thresholds": {
+          "response_time_ms": 100,
+          "throughput_req_per_s": 1000,
+          "memory_mb": 100
+        }
+      },
+      "security": {
+        "enabled": true,
+        "min_test_points": 3,
+        "owasp_top10": true,
+        "test_types": [
+          "sql_injection",
+          "xss",
+          "csrf",
+          "authentication",
+          "authorization"
+        ]
+      },
+      "concurrency": {
+        "enabled": true,
+        "min_test_points": 2,
+        "concurrent_users": 100,
+        "test_scenarios": [
+          "race_condition",
+          "deadlock",
+          "data_consistency"
+        ]
+      },
+      "stress": {
+        "enabled": true,
+        "min_test_points": 1,
+        "load_levels": ["normal", "high", "peak"]
+      },
+      "naming_pattern": "Q-{seq:03d}: {description}"
+    },
+    "naming": {
+      "enabled": true,
+      "pattern": "{type}-{seq:03d}: {description}",
+      "types": ["M", "F", "Q"],
+      "description_required": true,
+      "description_min_length": 10
+    },
+    "quality": {
+      "enabled": true,
+      "require_assertions": true,
+      "require_independence": true,
+      "require_cleanup": true,
+      "max_test_duration": 1000
+    }
+  },
+  "project_type": "web",
+  "web_app": {
+    "coverage": {
+      "line_coverage": 80
+    },
+    "monolithic_tests": {
+      "min_test_points": 3
+    },
+    "combination_tests": {
+      "method": "pairwise",
+      "max_test_points": 50
+    },
+    "quality_tests": {
+      "performance": {
+        "response_time_ms": 200
+      },
+      "security": {
+        "owasp_top10": true
+      }
+    }
+  },
+  "cli_tool": {
+    "coverage": {
+      "line_coverage": 85
+    },
+    "monolithic_tests": {
+      "min_test_points": 3
+    },
+    "combination_tests": {
+      "method": "orthogonal",
+      "max_test_points": 30
+    },
+    "quality_tests": {
+      "performance": {
+        "response_time_ms": 1000
+      }
+    }
+  },
+  "library": {
+    "coverage": {
+      "line_coverage": 90
+    },
+    "monolithic_tests": {
+      "min_test_points": 5
+    },
+    "combination_tests": {
+      "method": "pairwise",
+      "max_test_points": 100
+    },
+    "quality_tests": {
+      "performance": {
+        "response_time_ms": 50
+      }
+    }
+  }
+}
