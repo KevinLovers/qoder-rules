@@ -1,45 +1,63 @@
 {
-  "test_script_generation": {
+  "robotframework_test_script": {
     "check_mode": "strict",
     "warn_threshold": 3,
     
     "structure": {
       "enabled": true,
-      "require_imports": true,
-      "require_test_framework_import": true,
-      "require_module_import": true,
-      "require_describe": true,
+      "require_settings": true,
       "require_test_cases": true,
-      "require_setup_teardown": false
+      "require_keywords": false,
+      "require_variables": false,
+      "require_correct_order": true
     },
     
-    "code_quality": {
+    "settings": {
       "enabled": true,
-      "max_test_case_lines": 20,
-      "require_factory_functions": true,
-      "forbid_hardcoded_data": true,
-      "forbid_syntax_errors": true,
-      "require_meaningful_names": true
+      "require_library": true,
+      "require_resource": false,
+      "require_documentation": false,
+      "require_test_setup": false,
+      "require_test_teardown": false,
+      "require_suite_setup": false,
+      "require_suite_teardown": false
     },
     
-    "naming": {
+    "test_case_structure": {
       "enabled": true,
-      "file_pattern": "{name}.test.{ext}",
-      "describe_pattern": "{unit_name}",
-      "test_case_pattern": "{type}-{seq:03d}: should {behavior}",
+      "require_documentation": false,
+      "require_tags": false,
+      "require_setup": false,
+      "require_teardown": false,
+      "min_steps": 1,
+      "require_assertion": true
+    },
+    
+    "keywords": {
+      "enabled": true,
+      "require_keyword_exists": true,
+      "require_correct_arguments": true,
+      "forbid_undefined_keywords": true,
+      "require_library_keywords": false,
+      "require_user_keywords": false
+    },
+    
+    "variables": {
+      "enabled": true,
+      "require_variable_usage": false,
+      "forbid_hardcoded_values": true,
+      "require_meaningful_names": true,
+      "require_variable_format": true
+    },
+    
+    "test_point_naming": {
+      "enabled": true,
+      "require_test_point_prefix": true,
+      "pattern": "{type}-{seq:03d}: {description}",
+      "types": ["M", "F", "Q"],
       "min_description_length": 10,
       "max_description_length": 100,
-      "require_test_point_prefix": true,
-      "description_language": "business"
-    },
-    
-    "imports": {
-      "enabled": true,
-      "require_module_import": true,
-      "require_test_framework": true,
-      "forbid_nonexistent_imports": true,
-      "require_correct_paths": true,
-      "forbid_circular_dependencies": true
+      "require_sequential_numbering": true
     },
     
     "assertions": {
@@ -47,84 +65,69 @@
       "min_assertions_per_test": 1,
       "require_meaningful_assertions": true,
       "forbid_empty_assertions": true,
-      "require_result_verification": true,
-      "assertion_types": [
-        "toBe",
-        "toEqual",
-        "toThrow",
-        "toHaveBeenCalled",
-        "rejects"
+      "assertion_keywords": [
+        "Should Be Equal",
+        "Should Contain",
+        "Should Not Contain",
+        "Page Should Contain",
+        "Page Should Not Contain",
+        "Location Should Be",
+        "Title Should Be",
+        "Status Should Be"
       ]
     },
     
-    "mocks": {
+    "test_data": {
       "enabled": true,
-      "require_external_mocks": true,
-      "require_mock_setup": true,
-      "require_mock_cleanup": true,
-      "require_mock_verification": false,
-      "forbid_core_logic_mocks": true,
-      "require_realistic_mock_data": true
+      "require_variables": false,
+      "require_setup_teardown": false,
+      "forbid_hardcoded_data": true,
+      "require_data_independence": true
+    },
+    
+    "tags": {
+      "enabled": true,
+      "require_tags": false,
+      "require_meaningful_tags": true,
+      "common_tags": [
+        "smoke",
+        "regression",
+        "positive",
+        "negative",
+        "performance",
+        "api",
+        "ui"
+      ]
+    },
+    
+    "documentation": {
+      "enabled": true,
+      "require_test_documentation": false,
+      "require_keyword_documentation": false,
+      "min_documentation_length": 10
+    },
+    
+    "imports": {
+      "enabled": true,
+      "require_library_exists": true,
+      "require_resource_exists": true,
+      "forbid_circular_dependencies": true,
+      "require_correct_paths": true
     },
     
     "isolation": {
       "enabled": true,
-      "require_before_each": false,
-      "require_after_each": true,
-      "require_independent_data": true,
-      "forbid_shared_state": true,
-      "require_parallel_safe": true,
-      "require_resource_cleanup": true
-    },
-    
-    "async": {
-      "enabled": true,
-      "require_async_await": true,
-      "forbid_unhandled_promises": true,
-      "require_error_handling": true,
-      "max_timeout_ms": 5000
-    },
-    
-    "performance": {
-      "enabled": true,
-      "max_unit_test_ms": 100,
-      "max_integration_test_ms": 1000,
-      "max_e2e_test_ms": 10000,
-      "forbid_unnecessary_delays": true,
-      "require_mock_for_io": true
-    },
-    
-    "type_safety": {
-      "enabled": true,
-      "require_type_check": true,
-      "forbid_any_type": true,
-      "require_type_guards": true,
-      "require_mock_types": true
+      "require_independent_tests": true,
+      "require_setup_teardown": true,
+      "forbid_test_dependencies": true,
+      "require_parallel_safe": false
     },
     
     "error_handling": {
       "enabled": true,
       "require_error_tests": true,
-      "require_error_assertions": true,
-      "require_error_type_verification": false,
-      "require_error_message_verification": false,
-      "require_boundary_tests": true
-    },
-    
-    "maintainability": {
-      "enabled": true,
-      "require_helper_functions": true,
-      "require_constants": true,
-      "max_code_duplication": 30,
-      "require_comments": false,
-      "require_factory_functions": true
-    },
-    
-    "configuration": {
-      "enabled": true,
-      "require_test_config": true,
-      "require_coverage_config": false,
-      "require_path_aliases": false
+      "require_boundary_tests": true,
+      "require_negative_tests": true
     },
     
     "test_point_mapping": {
@@ -132,8 +135,6 @@
       "require_m_tests": true,
       "require_f_tests": false,
       "require_q_tests": false,
-      "test_point_naming_pattern": "{type}-{seq:03d}: {description}",
-      "test_point_types": ["M", "F", "Q"],
       "m_test_requirements": {
         "min_count": 3,
         "require_positive": true,
@@ -142,7 +143,7 @@
       },
       "f_test_requirements": {
         "min_count": 1,
-        "method": "pairwise"
+        "method": "template"
       },
       "q_test_requirements": {
         "min_count": 1,
@@ -155,16 +156,17 @@
     }
   },
   
-  "project_type": "web",
+  "project_type": "web_ui",
   
-  "web_app": {
+  "web_ui": {
     "check_mode": "strict",
-    "structure": {
-      "require_setup_teardown": true
+    "settings": {
+      "require_library": true,
+      "common_libraries": ["SeleniumLibrary"]
     },
-    "performance": {
-      "max_unit_test_ms": 100,
-      "max_integration_test_ms": 1000
+    "test_case_structure": {
+      "require_setup": true,
+      "require_teardown": true
     },
     "test_point_mapping": {
       "require_m_tests": true,
@@ -173,64 +175,73 @@
     }
   },
   
-  "cli_tool": {
+  "api": {
     "check_mode": "strict",
-    "performance": {
-      "max_unit_test_ms": 100
+    "settings": {
+      "require_library": true,
+      "common_libraries": ["RequestsLibrary"]
     },
-    "test_point_mapping": {
-      "require_m_tests": true,
-      "require_f_tests": false,
-      "require_q_tests": false
-    },
-    "type_safety": {
-      "enabled": false
-    }
-  },
-  
-  "library": {
-    "check_mode": "strict",
-    "performance": {
-      "max_unit_test_ms": 50,
-      "max_integration_test_ms": 500
+    "test_case_structure": {
+      "require_setup": false,
+      "require_teardown": false
     },
     "test_point_mapping": {
       "require_m_tests": true,
       "require_f_tests": true,
       "require_q_tests": true
+    }
+  },
+  
+  "database": {
+    "check_mode": "strict",
+    "settings": {
+      "require_library": true,
+      "common_libraries": ["DatabaseLibrary"]
     },
-    "m_test_requirements": {
-      "min_count": 5
+    "test_case_structure": {
+      "require_setup": true,
+      "require_teardown": true
+    },
+    "test_data": {
+      "require_setup_teardown": true
+    },
+    "test_point_mapping": {
+      "require_m_tests": true,
+      "require_f_tests": true,
+      "require_q_tests": false
     }
   },
   
   "check_priorities": {
     "critical": [
-      "structure.forbid_syntax_errors",
-      "imports.forbid_nonexistent_imports",
-      "assertions.min_assertions_per_test",
-      "mocks.forbid_core_logic_mocks",
-      "isolation.forbid_shared_state",
-      "async.forbid_unhandled_promises",
-      "type_safety.require_type_check"
+      "structure.require_settings",
+      "structure.require_test_cases",
+      "keywords.require_keyword_exists",
+      "keywords.forbid_undefined_keywords",
+      "assertions.require_assertion",
+      "test_point_naming.require_test_point_prefix",
+      "imports.require_library_exists",
+      "imports.require_resource_exists",
+      "isolation.forbid_test_dependencies"
     ],
     "important": [
-      "naming.require_test_point_prefix",
-      "mocks.require_external_mocks",
-      "isolation.require_independent_data",
+      "test_case_structure.require_documentation",
+      "test_case_structure.require_tags",
+      "variables.forbid_hardcoded_values",
+      "test_data.forbid_hardcoded_data",
       "error_handling.require_error_tests"
     ],
     "optional": [
-      "performance.max_unit_test_ms",
-      "maintainability.max_code_duplication",
-      "configuration.require_coverage_config"
+      "settings.require_documentation",
+      "documentation.require_test_documentation",
+      "tags.require_tags"
     ]
   },
   
   "reporting": {
     "enabled": true,
     "format": "detailed",
-    "output_file": "test-script-check-report.json",
+    "output_file": "robotframework-test-check-report.json",
     "show_warnings": true,
     "show_suggestions": true
   }

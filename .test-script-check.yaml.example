@@ -1,4 +1,4 @@
-# 测试脚本生成检查策略配置文件示例
+# RobotFramework 测试脚本生成检查策略配置文件示例
 # ============================================
 # 使用方法：
 # 1. 复制此文件为 .test-script-check.yaml
@@ -6,235 +6,239 @@
 # 3. AI 将自动读取并应用配置
 # ============================================
 
-test_script_generation:
+robotframework_test_script:
   # 检查模式：strict（严格模式，必须通过）或 lenient（宽松模式，警告）
   check_mode: "strict"  # strict | lenient
   warn_threshold: 3      # 宽松模式下最多允许的警告数
 
-  # [检查 1] 结构完整性检查
+  # [检查 1] 文件结构检查
   structure:
     enabled: true
-    require_imports: true              # 必须包含导入语句
-    require_test_framework_import: true # 必须导入测试框架
-    require_module_import: true         # 必须导入被测试模块
-    require_describe: true             # 必须包含describe块
-    require_test_cases: true           # 必须包含测试用例（it/test）
-    require_setup_teardown: false      # 是否必须包含setup/teardown（可选）
+    require_settings: true              # 必须包含 Settings 部分
+    require_test_cases: true            # 必须包含 Test Cases 部分
+    require_keywords: false             # 是否必须包含 Keywords 部分（可选）
+    require_variables: false            # 是否必须包含 Variables 部分（可选）
+    require_correct_order: true         # 各部分顺序必须正确
 
-  # [检查 2] 代码质量检查
-  code_quality:
+  # [检查 2] Settings 部分检查
+  settings:
     enabled: true
-    max_test_case_lines: 20            # 单个测试用例最大行数
-    require_factory_functions: true   # 必须使用工厂函数生成测试数据
-    forbid_hardcoded_data: true       # 禁止硬编码测试数据
-    forbid_syntax_errors: true        # 禁止语法错误（必须）
-    require_meaningful_names: true    # 必须使用有意义的变量名
+    require_library: true               # 必须导入至少一个库
+    require_resource: false             # 是否必须导入资源文件（可选）
+    require_documentation: false        # 是否必须包含文档（建议）
+    require_test_setup: false           # 是否必须配置 Test Setup（可选）
+    require_test_teardown: false       # 是否必须配置 Test Teardown（可选）
+    require_suite_setup: false          # 是否必须配置 Suite Setup（可选）
+    require_suite_teardown: false      # 是否必须配置 Suite Teardown（可选）
 
-  # [检查 3] 命名规范检查
-  naming:
+  # [检查 3] 测试用例结构检查
+  test_case_structure:
     enabled: true
-    # 测试文件命名模式
-    file_pattern: "{name}.test.{ext}"  # 或 "{name}.spec.{ext}"
-    # 测试套件命名模式
-    describe_pattern: "{unit_name}"     # 被测试单元名称
-    # 测试用例命名模式
-    test_case_pattern: "{type}-{seq:03d}: should {behavior}"
-    # 测试用例描述要求
-    min_description_length: 10          # 最小描述长度
-    max_description_length: 100        # 最大描述长度
-    require_test_point_prefix: true    # 必须包含测试点前缀（M/F/Q）
-    description_language: "business"  # 使用业务语言，避免技术黑话
+    require_documentation: false        # 是否必须包含 [Documentation]（建议）
+    require_tags: false                 # 是否必须包含 [Tags]（建议）
+    require_setup: false                # 是否必须包含 [Setup]（可选）
+    require_teardown: false            # 是否必须包含 [Teardown]（可选）
+    min_steps: 1                        # 最少步骤数
+    require_assertion: true             # 必须包含断言（必须）
 
-  # [检查 4] 依赖和导入检查
-  imports:
+  # [检查 4] 关键字使用检查
+  keywords:
     enabled: true
-    require_module_import: true        # 必须导入被测试模块
-    require_test_framework: true       # 必须导入测试框架
-    forbid_nonexistent_imports: true   # 禁止导入不存在的模块（必须）
-    require_correct_paths: true        # 导入路径必须正确
-    forbid_circular_dependencies: true # 禁止循环依赖
+    require_keyword_exists: true         # 关键字必须存在（必须）
+    require_correct_arguments: true     # 关键字参数必须正确（必须）
+    forbid_undefined_keywords: true     # 禁止未定义的关键字（必须）
+    require_library_keywords: false     # 是否必须使用库关键字（可选）
+    require_user_keywords: false        # 是否必须使用用户定义关键字（可选）
 
-  # [检查 5] 断言完整性检查
+  # [检查 5] 变量使用检查
+  variables:
+    enabled: true
+    require_variable_usage: false       # 是否必须使用变量（建议）
+    forbid_hardcoded_values: true       # 禁止硬编码值（必须）
+    require_meaningful_names: true       # 变量名称必须有意义
+    require_variable_format: true       # 变量格式必须正确（${var}, @{list}, &{dict}）
+
+  # [检查 6] 测试点命名检查
+  test_point_naming:
+    enabled: true
+    require_test_point_prefix: true     # 必须包含测试点前缀（必须）
+    pattern: "{type}-{seq:03d}: {description}"
+    types: ["M", "F", "Q"]              # M: 单功能, F: 组合, Q: 非功能
+    min_description_length: 10           # 最小描述长度
+    max_description_length: 100         # 最大描述长度
+    require_sequential_numbering: true   # 序号必须连续
+
+  # [检查 7] 断言检查
   assertions:
     enabled: true
-    min_assertions_per_test: 1         # 每个测试用例最少断言数
-    require_meaningful_assertions: true # 必须使用有意义的断言
-    forbid_empty_assertions: true      # 禁止空断言（如 expect(true).toBe(true)）
-    require_result_verification: true  # 必须验证测试结果
-    assertion_types:                   # 支持的断言类型
-      - toBe
-      - toEqual
-      - toThrow
-      - toHaveBeenCalled
-      - rejects
+    min_assertions_per_test: 1          # 每个测试用例最少断言数（必须）
+    require_meaningful_assertions: true  # 必须使用有意义的断言
+    forbid_empty_assertions: true       # 禁止空断言
+    assertion_keywords:                 # 支持的断言关键字
+      - Should Be Equal
+      - Should Contain
+      - Should Not Contain
+      - Page Should Contain
+      - Page Should Not Contain
+      - Location Should Be
+      - Title Should Be
+      - Status Should Be
 
-  # [检查 6] Mock和Stub使用检查
-  mocks:
+  # [检查 8] 测试数据和Fixture检查
+  test_data:
     enabled: true
-    require_external_mocks: true       # 外部依赖必须Mock
-    require_mock_setup: true           # 必须设置Mock返回值
-    require_mock_cleanup: true         # 测试后必须清理Mock
-    require_mock_verification: false   # 是否必须验证Mock调用（可选）
-    forbid_core_logic_mocks: true      # 禁止Mock被测试的核心逻辑（必须）
-    require_realistic_mock_data: true  # Mock数据必须真实
+    require_variables: false            # 是否必须使用变量（建议）
+    require_setup_teardown: false      # 是否必须配置 Setup/Teardown（建议）
+    forbid_hardcoded_data: true        # 禁止硬编码数据（必须）
+    require_data_independence: true    # 测试数据必须独立
 
-  # [检查 7] 隔离性和清理检查
+  # [检查 9] 标签检查
+  tags:
+    enabled: true
+    require_tags: false                 # 是否必须包含标签（建议）
+    require_meaningful_tags: true       # 标签必须有意义
+    common_tags:                        # 常用标签
+      - smoke
+      - regression
+      - positive
+      - negative
+      - performance
+      - api
+      - ui
+
+  # [检查 10] 文档检查
+  documentation:
+    enabled: true
+    require_test_documentation: false   # 是否必须包含测试用例文档（建议）
+    require_keyword_documentation: false # 是否必须包含关键字文档（建议）
+    min_documentation_length: 10        # 最小文档长度
+
+  # [检查 11] 资源文件和库导入检查
+  imports:
+    enabled: true
+    require_library_exists: true         # 库必须存在（必须）
+    require_resource_exists: true       # 资源文件必须存在（必须）
+    forbid_circular_dependencies: true  # 禁止循环依赖（必须）
+    require_correct_paths: true         # 路径必须正确（必须）
+
+  # [检查 12] 测试用例独立性检查
   isolation:
     enabled: true
-    require_before_each: false         # 是否必须使用beforeEach（可选）
-    require_after_each: true           # 必须使用afterEach清理
-    require_independent_data: true     # 每个测试必须使用独立数据
-    forbid_shared_state: true          # 禁止测试之间共享状态（必须）
-    require_parallel_safe: true        # 测试必须可以并行运行
-    require_resource_cleanup: true     # 必须清理资源（数据库、文件等）
+    require_independent_tests: true     # 测试用例必须独立（必须）
+    require_setup_teardown: true        # 建议使用 Setup/Teardown
+    forbid_test_dependencies: true      # 禁止测试用例之间的依赖（必须）
+    require_parallel_safe: false        # 是否必须支持并行运行（可选）
 
-  # [检查 8] 异步处理检查
-  async:
-    enabled: true
-    require_async_await: true          # 异步测试必须使用async/await
-    forbid_unhandled_promises: true    # 禁止未处理的Promise（必须）
-    require_error_handling: true       # 必须处理异步错误
-    max_timeout_ms: 5000              # 最大超时时间（毫秒）
-
-  # [检查 9] 性能要求检查
-  performance:
-    enabled: true
-    max_unit_test_ms: 100             # 单元测试最大执行时间（毫秒）
-    max_integration_test_ms: 1000     # 集成测试最大执行时间（毫秒）
-    max_e2e_test_ms: 10000           # E2E测试最大执行时间（毫秒）
-    forbid_unnecessary_delays: true  # 禁止不必要的延迟
-    require_mock_for_io: true         # I/O操作必须使用Mock
-
-  # [检查 10] 类型安全检查（TypeScript项目）
-  type_safety:
-    enabled: true                      # TypeScript项目启用
-    require_type_check: true           # 必须通过类型检查（必须）
-    forbid_any_type: true              # 禁止使用any类型
-    require_type_guards: true         # 类型断言必须使用类型守卫
-    require_mock_types: true          # Mock必须定义类型
-
-  # [检查 11] 错误处理检查
+  # [检查 13] 错误处理检查
   error_handling:
     enabled: true
-    require_error_tests: true          # 必须包含错误处理测试
-    require_error_assertions: true     # 错误测试必须包含断言
-    require_error_type_verification: false  # 是否必须验证错误类型（可选）
-    require_error_message_verification: false  # 是否必须验证错误消息（可选）
-    require_boundary_tests: true       # 必须包含边界条件测试
-
-  # [检查 12] 可维护性检查
-  maintainability:
-    enabled: true
-    require_helper_functions: true     # 必须使用辅助函数减少重复
-    require_constants: true            # 必须使用常量替代魔法值
-    max_code_duplication: 30          # 最大代码重复率（百分比）
-    require_comments: false            # 是否必须包含注释（可选，复杂逻辑建议）
-    require_factory_functions: true    # 必须使用工厂函数生成测试数据
-
-  # [检查 13] 配置检查
-  configuration:
-    enabled: true
-    require_test_config: true          # 必须存在测试配置文件
-    require_coverage_config: false     # 是否必须配置覆盖率（可选）
-    require_path_aliases: false        # 是否必须配置路径别名（可选）
+    require_error_tests: true           # 必须包含错误处理测试（必须）
+    require_boundary_tests: true        # 必须包含边界条件测试（必须）
+    require_negative_tests: true        # 必须包含负向测试（必须）
 
   # [检查 14] 测试点对应关系检查
   test_point_mapping:
     enabled: true
-    require_m_tests: true              # 必须包含M测试点（单功能测试）
-    require_f_tests: false             # 是否必须包含F测试点（组合测试，可选）
-    require_q_tests: false             # 是否必须包含Q测试点（非功能测试，可选）
-    test_point_naming_pattern: "{type}-{seq:03d}: {description}"
-    # 测试点类型：M（单功能）、F（组合）、Q（非功能）
-    test_point_types: ["M", "F", "Q"]
-    # M测试点要求
+    require_m_tests: true               # 必须包含M测试点（单功能测试，必须）
+    require_f_tests: false              # 是否必须包含F测试点（组合测试，可选）
+    require_q_tests: false              # 是否必须包含Q测试点（非功能测试，可选）
     m_test_requirements:
-      min_count: 3                     # 每个功能最少M测试点数
-      require_positive: true           # 必须包含正向测试点
-      require_boundary: true           # 必须包含边界测试点
-      require_negative: true           # 必须包含异常测试点
-    # F测试点要求
+      min_count: 3                      # 每个功能最少M测试点数
+      require_positive: true            # 必须包含正向测试点
+      require_boundary: true            # 必须包含边界测试点
+      require_negative: true            # 必须包含异常测试点
     f_test_requirements:
-      min_count: 1                     # 每个功能最少F测试点数（如启用）
-      method: "pairwise"               # 生成方法：orthogonal/pairwise
-    # Q测试点要求
+      min_count: 1                      # 每个功能最少F测试点数（如启用）
+      method: "template"                 # 生成方法：template/pairwise
     q_test_requirements:
-      min_count: 1                     # 每个功能最少Q测试点数（如启用）
-      categories:                      # Q测试点类别
-        - performance                  # 性能测试
-        - security                     # 安全测试
-        - concurrency                 # 并发测试
+      min_count: 1                      # 每个功能最少Q测试点数（如启用）
+      categories:                       # Q测试点类别
+        - performance                   # 性能测试
+        - security                      # 安全测试
+        - concurrency                   # 并发测试
 
 # 项目类型特定配置
-project_type: "web"  # web | cli | library
+project_type: "web_ui"  # web_ui | api | database
 
-# Web 应用配置
-web_app:
+# Web UI 测试配置
+web_ui:
   check_mode: "strict"
-  structure:
+  settings:
+    require_library: true
+    common_libraries:
+      - SeleniumLibrary
+  test_case_structure:
+    require_setup: true
+    require_teardown: true
+  test_point_mapping:
+    require_m_tests: true
+    require_f_tests: false
+    require_q_tests: false
+
+# API 测试配置
+api:
+  check_mode: "strict"
+  settings:
+    require_library: true
+    common_libraries:
+      - RequestsLibrary
+  test_case_structure:
+    require_setup: false
+    require_teardown: false
+  test_point_mapping:
+    require_m_tests: true
+    require_f_tests: true
+    require_q_tests: true
+
+# 数据库测试配置
+database:
+  check_mode: "strict"
+  settings:
+    require_library: true
+    common_libraries:
+      - DatabaseLibrary
+  test_case_structure:
+    require_setup: true
+    require_teardown: true
+  test_data:
     require_setup_teardown: true
-  performance:
-    max_unit_test_ms: 100
-    max_integration_test_ms: 1000
   test_point_mapping:
     require_m_tests: true
-    require_f_tests: false
+    require_f_tests: true
     require_q_tests: false
-
-# CLI 工具配置
-cli_tool:
-  check_mode: "strict"
-  performance:
-    max_unit_test_ms: 100
-  test_point_mapping:
-    require_m_tests: true
-    require_f_tests: false
-    require_q_tests: false
-  type_safety:
-    enabled: false  # CLI工具可能不使用TypeScript
-
-# 库/SDK 配置
-library:
-  check_mode: "strict"
-  performance:
-    max_unit_test_ms: 50
-    max_integration_test_ms: 500
-  test_point_mapping:
-    require_m_tests: true
-    require_f_tests: true   # 库/SDK建议包含F测试点
-    require_q_tests: true   # 库/SDK建议包含Q测试点
-  m_test_requirements:
-    min_count: 5            # 库/SDK要求更多测试点
 
 # 检查项优先级配置
 check_priorities:
   # 关键检查项（必须通过）
   critical:
-    - structure.forbid_syntax_errors
-    - imports.forbid_nonexistent_imports
-    - assertions.min_assertions_per_test
-    - mocks.forbid_core_logic_mocks
-    - isolation.forbid_shared_state
-    - async.forbid_unhandled_promises
-    - type_safety.require_type_check
+    - structure.require_settings
+    - structure.require_test_cases
+    - keywords.require_keyword_exists
+    - keywords.forbid_undefined_keywords
+    - assertions.require_assertion
+    - test_point_naming.require_test_point_prefix
+    - imports.require_library_exists
+    - imports.require_resource_exists
+    - isolation.forbid_test_dependencies
   
   # 重要检查项（建议通过）
   important:
-    - naming.require_test_point_prefix
-    - mocks.require_external_mocks
-    - isolation.require_independent_data
+    - test_case_structure.require_documentation
+    - test_case_structure.require_tags
+    - variables.forbid_hardcoded_values
+    - test_data.forbid_hardcoded_data
     - error_handling.require_error_tests
   
   # 一般检查项（可选）
   optional:
-    - performance.max_unit_test_ms
-    - maintainability.max_code_duplication
-    - configuration.require_coverage_config
+    - settings.require_documentation
+    - documentation.require_test_documentation
+    - tags.require_tags
 
 # 检查报告配置
 reporting:
   enabled: true
   format: "detailed"  # detailed | summary | json
-  output_file: "test-script-check-report.json"
+  output_file: "robotframework-test-check-report.json"
   show_warnings: true
   show_suggestions: true

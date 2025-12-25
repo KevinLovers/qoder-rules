@@ -1,8 +1,8 @@
-# 测试脚本生成检查策略快速使用指南
+# RobotFramework 测试脚本生成检查策略快速使用指南
 
 ## 📋 概述
 
-本指南帮助您快速了解和使用测试脚本生成检查策略，确保生成的测试脚本符合质量标准和最佳实践。
+本指南帮助您快速了解和使用 RobotFramework 测试脚本生成检查策略，确保生成的测试脚本符合质量标准和最佳实践。
 
 ## 🚀 快速开始
 
@@ -13,13 +13,10 @@
 ```
 @quality/test-script-generation-check.zh-CN.md
 
-请为以下函数生成测试脚本：
-function calculateDiscount(price: number, discountRate: number): number {
-  if (price < 0 || discountRate < 0 || discountRate > 1) {
-    throw new Error('Invalid input');
-  }
-  return price * (1 - discountRate);
-}
+请为以下功能生成 RobotFramework 测试脚本：
+- 用户登录功能
+- 输入：用户名、密码
+- 验证：登录成功/失败
 ```
 
 ### 2. 配置检查策略
@@ -36,215 +33,277 @@ vim .test-script-check.yaml
 
 #### 方式二：在代码注释中指定
 
-```typescript
-/**
- * @test-check strict
- * @require-m-tests true
- * @min-test-points 5
- */
-function calculateDiscount(price: number, discountRate: number): number {
-  // ...
-}
+```robot
+*** Settings ***
+# @test-check strict
+# @require-m-tests true
+# @min-test-points 5
+Documentation    用户登录功能测试
+Library          SeleniumLibrary
 ```
 
 ## 📝 14个检查项详解
 
-### [检查 1] 结构完整性
+### [检查 1] 文件结构完整性
 
 **检查内容**：
-- ✅ 测试文件命名规范（*.test.js, *.spec.js）
-- ✅ 包含测试框架导入
-- ✅ 包含被测试模块导入
-- ✅ 包含测试套件（describe）
-- ✅ 包含测试用例（it/test）
+- ✅ 文件扩展名为 .robot
+- ✅ 包含 *** Settings *** 部分
+- ✅ 包含 *** Test Cases *** 部分
+- ✅ 各部分顺序正确
 
 **示例**：
-```typescript
-// ✅ 正确
-import { describe, it, expect } from '@jest/globals';
-import { UserService } from '../src/UserService';
+```robot
+*** Settings ***
+Documentation    用户登录功能测试
+Library          SeleniumLibrary
 
-describe('UserService', () => {
-  it('should create user', () => {
-    // ...
-  });
-});
+*** Test Cases ***
+M-001: 用户登录应成功
+    [Documentation]    测试用户登录功能
+    [Tags]    smoke    login
+    打开登录页面
+    输入用户名    ${USERNAME}
+    输入密码    ${PASSWORD}
+    点击登录按钮
+    验证登录成功
 ```
 
-### [检查 2] 代码质量
+### [检查 2] Settings 部分配置
 
 **检查内容**：
-- ✅ 无语法错误，可编译运行
-- ✅ 单个测试用例不超过20行
-- ✅ 使用工厂函数生成测试数据
-- ✅ 避免硬编码数据
+- ✅ 包含必要的库导入
+- ✅ 库名称拼写正确
+- ✅ 资源文件路径正确
 
 **示例**：
-```typescript
-// ✅ 正确：使用工厂函数
-function createTestUser(overrides = {}) {
-  return { id: '1', email: 'test@example.com', ...overrides };
-}
-
-it('should create user', () => {
-  const user = createTestUser({ email: 'custom@example.com' });
-  // ...
-});
+```robot
+*** Settings ***
+Documentation    用户管理功能测试
+Library          SeleniumLibrary
+Library          Collections
+Resource         ../resources/common.robot
+Test Setup       打开浏览器
+Test Teardown    关闭浏览器
 ```
 
-### [检查 3] 命名规范
+### [检查 3] 测试用例结构
 
 **检查内容**：
-- ✅ 测试文件：`{name}.test.{ext}`
-- ✅ 测试套件：`describe('被测试单元名称')`
-- ✅ 测试用例：`{type}-{seq:03d}: should {behavior}`
-- ✅ 描述长度：10-100字符
+- ✅ 测试用例名称符合规范（M-001, F-001, Q-001）
+- ✅ 包含 [Documentation]（建议）
+- ✅ 包含 [Tags]（建议）
+- ✅ 包含测试步骤和断言
 
 **示例**：
-```typescript
-// ✅ 正确：符合命名规范
-describe('UserService', () => {
-  it('M-001: should create user with valid email', () => {});
-  it('M-002: should throw error for invalid email', () => {});
-});
+```robot
+*** Test Cases ***
+M-001: 用户使用有效凭据登录应成功
+    [Documentation]    测试用户使用有效用户名和密码登录成功
+    [Tags]    smoke    login    positive
+    [Setup]    打开登录页面
+    输入用户名    ${VALID_USERNAME}
+    输入密码    ${VALID_PASSWORD}
+    点击登录按钮
+    验证登录成功    ${VALID_USERNAME}
+    [Teardown]    退出登录
 ```
 
-### [检查 4] 依赖和导入
+### [检查 4] 关键字使用
 
 **检查内容**：
-- ✅ 导入路径正确
-- ✅ 所有导入的模块都存在
-- ✅ 避免循环依赖
+- ✅ 关键字名称正确
+- ✅ 关键字参数匹配
+- ✅ 关键字来自已导入的库或资源文件
 
-### [检查 5] 断言完整性
+**示例**：
+```robot
+*** Test Cases ***
+M-001: 用户登录测试
+    打开登录页面
+    输入用户名    ${USERNAME}
+    输入密码    ${PASSWORD}
+    点击登录按钮
+    验证登录成功
+
+*** Keywords ***
+打开登录页面
+    Go To    ${LOGIN_URL}
+    Wait Until Page Contains Element    id=username
+```
+
+### [检查 5] 变量使用
+
+**检查内容**：
+- ✅ 变量格式正确（${var}, @{list}, &{dict}）
+- ✅ 避免硬编码值
+- ✅ 变量名称有意义
+
+**示例**：
+```robot
+*** Variables ***
+${LOGIN_URL}         https://example.com/login
+${VALID_USERNAME}    testuser
+${VALID_PASSWORD}    testpass123
+
+*** Test Cases ***
+M-001: 用户登录测试
+    Go To    ${LOGIN_URL}
+    Input Text    id=username    ${VALID_USERNAME}
+    Input Text    id=password    ${VALID_PASSWORD}
+```
+
+### [检查 6] 测试点命名规范
+
+**检查内容**：
+- ✅ 测试用例名称格式：{类型}-{序号}: {描述}
+- ✅ 测试点类型：M（单功能）、F（组合）、Q（非功能）
+- ✅ 测试点序号：3位数字（001, 002, 003...）
+
+**示例**：
+```robot
+*** Test Cases ***
+M-001: 用户使用有效凭据登录应成功
+M-002: 用户使用无效密码登录应失败
+F-001: 用户名和密码组合验证应覆盖所有边界情况
+Q-001: 登录接口响应时间应小于100毫秒
+```
+
+### [检查 7] 断言和验证
 
 **检查内容**：
 - ✅ 每个测试用例至少一个断言
-- ✅ 断言验证正确的值或行为
-- ✅ 避免无意义的断言
+- ✅ 使用合适的断言关键字
+- ✅ 断言验证正确的值或状态
 
 **示例**：
-```typescript
-// ✅ 正确：包含有意义的断言
-it('M-001: should return discounted price', () => {
-  const result = calculateDiscount(100, 0.1);
-  expect(result).toBe(90);
-});
-
-// ❌ 错误：无意义的断言
-it('should work', () => {
-  expect(true).toBe(true);
-});
+```robot
+*** Test Cases ***
+M-001: 用户登录应成功
+    打开登录页面
+    输入用户名    ${USERNAME}
+    输入密码    ${PASSWORD}
+    点击登录按钮
+    Wait Until Page Contains    欢迎
+    Page Should Contain    欢迎, ${USERNAME}
+    Location Should Be    ${HOME_URL}
 ```
 
-### [检查 6] Mock和Stub使用
+### [检查 8] 测试数据和Fixture
 
 **检查内容**：
-- ✅ 外部依赖必须Mock
-- ✅ Mock设置正确
-- ✅ 测试后清理Mock
-- ✅ 禁止Mock核心逻辑
+- ✅ 测试数据使用变量
+- ✅ Setup 和 Teardown 配置正确
+- ✅ 测试数据独立
 
 **示例**：
-```typescript
-// ✅ 正确：Mock外部依赖
-beforeEach(() => {
-  mockFetch = jest.fn().mockResolvedValue({ data: {} });
-  global.fetch = mockFetch;
-});
-
-afterEach(() => {
-  jest.clearAllMocks();
-});
+```robot
+*** Test Cases ***
+M-001: 用户登录应成功
+    [Setup]    打开浏览器并导航到登录页
+    [Teardown]    关闭浏览器
+    输入用户名    ${VALID_USERNAME}
+    输入密码    ${VALID_PASSWORD}
+    点击登录按钮
+    验证登录成功
 ```
 
-### [检查 7] 隔离性和清理
+### [检查 9] 标签使用
 
 **检查内容**：
-- ✅ 使用beforeEach/afterEach清理状态
-- ✅ 每个测试使用独立数据
-- ✅ 避免共享状态
-- ✅ 测试可并行运行
-
-### [检查 8] 异步处理
-
-**检查内容**：
-- ✅ 异步测试使用async/await
-- ✅ 正确处理Promise
-- ✅ 正确处理异步错误
+- ✅ 测试用例包含有意义的标签
+- ✅ 标签命名规范
 
 **示例**：
-```typescript
-// ✅ 正确：正确处理异步
-it('M-001: should fetch user', async () => {
-  const user = await userService.getUser(1);
-  expect(user).toBeDefined();
-});
+```robot
+*** Test Cases ***
+M-001: 用户登录应成功
+    [Tags]    smoke    login    positive
+
+M-002: 用户登录失败应显示错误
+    [Tags]    login    negative
+
+Q-001: 登录接口性能测试
+    [Tags]    performance    api
 ```
 
-### [检查 9] 性能要求
+### [检查 10] 文档完整性
 
 **检查内容**：
-- ✅ 单元测试 < 100ms
-- ✅ 集成测试 < 1s
-- ✅ 避免不必要的延迟
-
-### [检查 10] 类型安全（TypeScript）
-
-**检查内容**：
-- ✅ 通过TypeScript类型检查
-- ✅ 避免使用any类型
-- ✅ Mock类型定义正确
-
-### [检查 11] 错误处理
-
-**检查内容**：
-- ✅ 包含错误处理测试
-- ✅ 错误断言正确
-- ✅ 测试边界条件
+- ✅ 测试用例包含 [Documentation]
+- ✅ 用户定义关键字包含文档
 
 **示例**：
-```typescript
-// ✅ 正确：包含错误处理测试
-it('M-002: should throw error for invalid input', () => {
-  expect(() => calculateDiscount(-100, 0.1)).toThrow('Invalid input');
-});
+```robot
+*** Test Cases ***
+M-001: 用户使用有效凭据登录应成功
+    [Documentation]    测试用户使用有效的用户名和密码登录系统
+    ...                验证登录成功后跳转到首页并显示欢迎信息
+    [Tags]    smoke    login
+    打开登录页面
+    输入用户名    ${VALID_USERNAME}
+    输入密码    ${VALID_PASSWORD}
+    点击登录按钮
+    验证登录成功
 ```
 
-### [检查 12] 可维护性
+### [检查 11] 资源文件和库导入
 
 **检查内容**：
-- ✅ 使用辅助函数减少重复
-- ✅ 使用常量替代魔法值
-- ✅ 代码重复率 < 30%
+- ✅ 资源文件路径正确
+- ✅ 库名称拼写正确
+- ✅ 所有导入的库和资源文件存在
 
-### [检查 13] 配置检查
+### [检查 12] 测试用例独立性
 
 **检查内容**：
-- ✅ 测试框架配置正确
-- ✅ 路径别名配置正确（如使用）
+- ✅ 每个测试用例独立运行
+- ✅ 使用 Setup 和 Teardown 确保环境隔离
+- ✅ 测试用例不依赖执行顺序
+
+### [检查 13] 错误处理
+
+**检查内容**：
+- ✅ 包含错误处理测试用例
+- ✅ 测试边界条件和异常输入
+- ✅ 验证错误消息和状态
+
+**示例**：
+```robot
+*** Test Cases ***
+M-002: 用户名为空时登录应显示错误提示
+    [Documentation]    测试用户名为空时的错误处理
+    [Tags]    login    negative    validation
+    打开登录页面
+    输入密码    ${VALID_PASSWORD}
+    点击登录按钮
+    等待错误提示显示
+    验证错误消息    用户名不能为空
+```
 
 ### [检查 14] 测试点对应关系
 
 **检查内容**：
-- ✅ 包含M测试点（单功能测试）
+- ✅ 包含M测试点（单功能测试，必须）
 - ✅ 包含F测试点（组合测试，可选）
 - ✅ 包含Q测试点（非功能测试，可选）
-- ✅ 测试点命名格式正确
 
 **示例**：
-```typescript
-describe('UserService', () => {
-  // M-单功能测试点
-  it('M-001: should create user with valid email', () => {});
-  it('M-002: should throw error for invalid email', () => {});
-  
-  // F-组合测试点（可选）
-  it('F-001: should handle combination of email and password', () => {});
-  
-  // Q-非功能测试点（可选）
-  it('Q-001: should create user within 100ms', async () => {});
-});
+```robot
+*** Test Cases ***
+# M-单功能测试点
+M-001: 用户使用有效凭据登录应成功
+M-002: 用户使用无效密码登录应失败
+
+# F-组合测试点
+F-001: 用户名和密码组合验证应覆盖所有边界情况
+    [Template]    验证登录组合
+    ${VALID_USERNAME}    ${VALID_PASSWORD}    ${TRUE}
+    ${VALID_USERNAME}    ${INVALID_PASSWORD}    ${FALSE}
+
+# Q-非功能测试点
+Q-001: 登录接口响应时间应小于100毫秒
+Q-002: 登录功能应能处理100个并发请求
 ```
 
 ## ⚙️ 检查策略配置
@@ -260,50 +319,28 @@ check_mode: "strict"
 #### 宽松模式（Lenient Mode）
 ```yaml
 check_mode: "lenient"
-warn_threshold: 3  # 最多允许3个警告
+warn_threshold: 3
 # 检查项失败时发出警告，但不阻止测试脚本生成
 ```
-
-### 检查项优先级
-
-#### 关键检查项（必须通过）
-- 结构完整性（语法错误）
-- 依赖导入（不存在的模块）
-- 断言完整性（至少一个断言）
-- Mock使用（禁止Mock核心逻辑）
-- 隔离性（禁止共享状态）
-- 异步处理（禁止未处理的Promise）
-- 类型安全（TypeScript类型检查）
-
-#### 重要检查项（建议通过）
-- 命名规范（测试点前缀）
-- Mock使用（外部依赖Mock）
-- 隔离性（独立数据）
-- 错误处理（错误测试）
-
-#### 一般检查项（可选）
-- 性能要求（执行时间）
-- 可维护性（代码重复率）
-- 配置检查（覆盖率配置）
 
 ### 配置示例
 
 ```yaml
-test_script_generation:
+robotframework_test_script:
   check_mode: "strict"
   
+  # 文件结构检查
   structure:
-    enabled: true
-    require_imports: true
-    require_describe: true
+    require_settings: true
+    require_test_cases: true
   
-  naming:
-    enabled: true
+  # 测试点命名检查
+  test_point_naming:
     require_test_point_prefix: true
-    test_case_pattern: "{type}-{seq:03d}: should {behavior}"
+    pattern: "{type}-{seq:03d}: {description}"
   
+  # 测试点对应关系检查
   test_point_mapping:
-    enabled: true
     require_m_tests: true
     require_f_tests: false
     require_q_tests: false
@@ -311,50 +348,49 @@ test_script_generation:
 
 ## 🎯 使用场景示例
 
-### 场景 1：生成单元测试脚本
+### 场景 1：生成Web UI测试脚本
 
 ```
 @quality/test-script-generation-check.zh-CN.md
 
-请为以下函数生成单元测试脚本：
-
-function validateEmail(email: string): boolean {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return emailRegex.test(email);
-}
+请为以下功能生成 RobotFramework Web UI 测试脚本：
+- 用户登录功能
+- 输入：用户名、密码
+- 验证：登录成功/失败
 ```
 
 **AI 将生成**：
-- ✅ 完整的测试脚本结构
+- ✅ 完整的 .robot 文件结构
 - ✅ M-001 到 M-005：单功能测试点
+- ✅ 使用 SeleniumLibrary
 - ✅ 符合所有检查项要求
 
-### 场景 2：生成集成测试脚本
+### 场景 2：生成API测试脚本
 
 ```
 @quality/test-script-generation-check.zh-CN.md
 
-请为以下API端点生成集成测试脚本：
+请为以下API端点生成 RobotFramework API 测试脚本：
 
-POST /api/users
-Body: { username, email, password }
+POST /api/users/login
+Body: { username, password }
+Response: { token, user_id }
 ```
 
 **AI 将生成**：
+- ✅ 使用 RequestsLibrary
 - ✅ 包含M和F测试点
-- ✅ 正确使用Mock
-- ✅ 包含错误处理测试
+- ✅ 包含Q性能测试点
 
 ### 场景 3：自定义检查策略
 
 ```yaml
 # .test-script-check.yaml
-test_script_generation:
+robotframework_test_script:
   check_mode: "strict"
   
-  naming:
+  test_point_naming:
     require_test_point_prefix: true
-    test_case_pattern: "{type}-{seq:03d}: {description}"
   
   test_point_mapping:
     require_m_tests: true
@@ -384,13 +420,13 @@ test_script_generation:
   },
   "checks": {
     "structure": { "status": "passed" },
-    "naming": { "status": "failed", "reason": "缺少测试点前缀" },
+    "test_point_naming": { "status": "failed", "reason": "缺少测试点前缀" },
     "assertions": { "status": "passed" },
-    "mocks": { "status": "warning", "reason": "建议添加Mock清理" }
+    "keywords": { "status": "warning", "reason": "建议添加关键字文档" }
   },
   "suggestions": [
     "测试用例命名应包含测试点前缀（M-001, F-001等）",
-    "建议在afterEach中清理Mock"
+    "建议为关键字添加 [Documentation]"
   ]
 }
 ```
@@ -400,32 +436,32 @@ test_script_generation:
 ### 自动检查
 
 AI 将自动检查：
-- ✅ 测试脚本结构完整性
-- ✅ 代码质量和命名规范
-- ✅ 断言和Mock使用
-- ✅ 测试点对应关系
+- ✅ 文件结构完整性
+- ✅ 关键字和变量使用
+- ✅ 测试点命名规范
+- ✅ 断言完整性
 
 ### 手动验证
 
 ```bash
-# 运行测试
-npm test
+# 运行 RobotFramework 测试
+robot tests/login.robot
 
-# 检查TypeScript类型（如适用）
-npm run type-check
+# 检查语法
+robot --dryrun tests/login.robot
 
-# 运行lint检查
-npm run lint
+# 生成报告
+robot --report report.html tests/login.robot
 ```
 
 ## 📚 最佳实践
 
 1. **使用严格模式**：确保测试脚本质量
 2. **包含M测试点**：所有功能都应该有M测试点
-3. **正确使用Mock**：Mock外部依赖，不要Mock核心逻辑
+3. **使用变量**：避免硬编码值
 4. **保持测试独立**：每个测试用例应该独立运行
 5. **包含错误处理**：测试错误情况和边界条件
-6. **使用工厂函数**：避免硬编码测试数据
+6. **使用Setup/Teardown**：确保测试环境隔离
 7. **遵循命名规范**：使用清晰的测试用例描述
 
 ## ❓ 常见问题
@@ -441,33 +477,33 @@ npm run lint
 
 **A**: 在配置文件中禁用：
 ```yaml
-test_script_generation:
-  performance:
-    enabled: false  # 禁用性能检查
+robotframework_test_script:
+  documentation:
+    enabled: false  # 禁用文档检查
 ```
 
 ### Q3: 测试脚本必须包含F和Q测试点吗？
 
 **A**: 根据项目需求：
 - M测试点：必须包含
-- F测试点：多参数函数建议包含
+- F测试点：多参数组合时建议包含
 - Q测试点：关键功能建议包含
 
 ### Q4: 如何自定义检查规则？
 
 **A**: 在配置文件中修改：
 ```yaml
-test_script_generation:
-  naming:
-    test_case_pattern: "自定义模式"
+robotframework_test_script:
+  test_point_naming:
+    pattern: "自定义模式"
 ```
 
 ## 📖 相关文档
 
-- [测试脚本生成检查策略规范](./test-script-generation-check.zh-CN.md)
+- [RobotFramework 测试脚本生成检查策略规范](./test-script-generation-check.zh-CN.md)
 - [测试点生成策略规范](./test-case-generation-strategy.zh-CN.md)
 - [测试规范](./testing-spec.zh-CN.md)
-- [开发需求规范](../core/requirements-spec.zh-CN.md)
+- [RobotFramework 官方文档](https://robotframework.org/)
 
 ---
 
